@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\Blog;
 
-use App\Filament\Resources\Blog\AuthorResource\Pages;
-use App\Models\Blog\Author;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\Blog\Author;
+use Filament\Resources\Resource;
+
+use App\Filament\Resources\Blog\AuthorResource\Pages;
+use Filament\Forms;
+use Filament\Notifications\Notification;
 
 class AuthorResource extends Resource
 {
