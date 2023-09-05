@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Model::unguard();
-        Schema::defaultStringLength(191);
+        Schema::defaultStringLength(125); // php artisan shield:install --fresh (125)
 
         if (app()->environment('production')) {
             URL::forceScheme('https');

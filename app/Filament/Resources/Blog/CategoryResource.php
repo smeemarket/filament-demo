@@ -20,6 +20,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Blog\CategoryResource\Pages;
 use Spatie\MediaLibrary\Conversions\ImageGenerators\Pdf;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class CategoryResource extends Resource
 {
@@ -101,10 +102,7 @@ class CategoryResource extends Resource
                                 ->send();
                         }),
                 ]),
-                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
-                ->title('to update!')
-                ->warning()
-                ->send()),
+                FilamentExportBulkAction::make('export')
             ]);
     }
 
