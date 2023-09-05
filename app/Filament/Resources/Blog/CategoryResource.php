@@ -2,18 +2,24 @@
 
 namespace App\Filament\Resources\Blog;
 
-use App\Filament\Resources\Blog\CategoryResource\Pages;
-use App\Models\Blog\Category;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use App\Models\Blog\Category;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Blade;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Resources\Blog\CategoryResource\Pages;
+use Spatie\MediaLibrary\Conversions\ImageGenerators\Pdf;
 
 class CategoryResource extends Resource
 {
@@ -67,6 +73,10 @@ class CategoryResource extends Resource
                 Tables\Columns\IconColumn::make('is_visible')
                     ->label('Visibility')
                     ->boolean(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->sortable()
+                    ->date(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Last Updated')
                     ->date(),
@@ -79,14 +89,22 @@ class CategoryResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function () {
-                        Notification::make()
-                            ->title('Now, now, don\'t be cheeky, leave some records for others to play with!')
-                            ->warning()
-                            ->send();
-                    }),
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully!')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ]);
     }
 
@@ -120,4 +138,9 @@ class CategoryResource extends Resource
             'index' => Pages\ManageCategories::route('/'),
         ];
     }
+
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::$model::count();
+    // }
 }

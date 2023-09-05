@@ -2,17 +2,20 @@
 
 namespace App\Filament\Resources\Shop;
 
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Models\Shop\Category;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Shop\CategoryResource\Pages;
 use App\Filament\Resources\Shop\CategoryResource\RelationManagers;
-use App\Models\Shop\Category;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
@@ -37,6 +40,7 @@ class CategoryResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
+                                    ->autofocus()
                                     ->required()
                                     ->maxValue(50)
                                     ->live(onBlur: true)
@@ -52,6 +56,7 @@ class CategoryResource extends Resource
                         Forms\Components\Select::make('parent_id')
                             ->label('Parent')
                             ->relationship('parent', 'name', fn (Builder $query) => $query->where('parent_id', null))
+                            ->preload()
                             ->searchable()
                             ->placeholder('Select parent category'),
 
@@ -106,14 +111,22 @@ class CategoryResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function () {
-                        Notification::make()
-                            ->title('Now, now, don\'t be cheeky, leave some records for others to play with!')
-                            ->warning()
-                            ->send();
-                    }),
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully!')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ]);
     }
 
@@ -132,4 +145,9 @@ class CategoryResource extends Resource
             'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
+
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::$model::count();
+    // }
 }

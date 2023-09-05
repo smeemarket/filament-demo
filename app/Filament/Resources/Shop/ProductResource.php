@@ -2,21 +2,24 @@
 
 namespace App\Filament\Resources\Shop;
 
-use App\Filament\Resources\Shop\BrandResource\RelationManagers\ProductsRelationManager;
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use App\Models\Shop\Product;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Shop\ProductResource\Pages;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers;
 use App\Filament\Resources\Shop\ProductResource\Widgets\ProductStats;
-use App\Models\Shop\Product;
-use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use App\Filament\Resources\Shop\BrandResource\RelationManagers\ProductsRelationManager;
 
 class ProductResource extends Resource
 {
@@ -32,7 +35,7 @@ class ProductResource extends Resource
 
     protected static ?string $navigationLabel = 'Products';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -43,6 +46,7 @@ class ProductResource extends Resource
                         Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
+                                    ->autofocus()
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
@@ -152,12 +156,14 @@ class ProductResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('shop_brand_id')
                                     ->relationship('brand', 'name')
+                                    ->preload()
                                     ->searchable()
                                     ->hiddenOn(ProductsRelationManager::class),
 
                                 Forms\Components\Select::make('categories')
                                     ->relationship('categories', 'name')
                                     ->multiple()
+                                    ->preload()
                                     ->required(),
                             ]),
                     ])
@@ -237,14 +243,22 @@ class ProductResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function () {
-                        Notification::make()
-                            ->title('Now, now, don\'t be cheeky, leave some records for others to play with!')
-                            ->warning()
-                            ->send();
-                    }),
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully!')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ]);
     }
 

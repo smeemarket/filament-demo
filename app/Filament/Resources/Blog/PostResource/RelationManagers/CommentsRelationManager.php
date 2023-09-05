@@ -26,6 +26,7 @@ class CommentsRelationManager extends RelationManager
 
                 Forms\Components\Select::make('customer_id')
                     ->relationship('customer', 'name')
+                    ->preload()
                     ->searchable()
                     ->required(),
 
@@ -44,6 +45,7 @@ class CommentsRelationManager extends RelationManager
     {
         return $infolist
             ->columns(1)
+            ->inlineLabel()
             ->schema([
                 TextEntry::make('title'),
                 TextEntry::make('customer.name'),

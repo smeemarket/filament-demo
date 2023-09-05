@@ -2,14 +2,19 @@
 
 namespace App\Filament\Resources\Blog;
 
-use App\Filament\Resources\Blog\AuthorResource\Pages;
-use App\Models\Blog\Author;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\Blog\Author;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Notifications\Notification;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Resources\Blog\AuthorResource\Pages;
 
 class AuthorResource extends Resource
 {
@@ -86,19 +91,42 @@ class AuthorResource extends Resource
                 //
             ])
             ->actions([
+                // Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function () {
-                        Notification::make()
-                            ->title('Now, now, don\'t be cheeky, leave some records for others to play with!')
-                            ->warning()
-                            ->send();
-                    }),
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully!')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ]);
     }
+
+    // public static function infolist(Infolist $infolist): Infolist
+    // {
+    //     return $infolist
+    //         ->schema([
+    //             TextEntry::make('name'),
+    //             TextEntry::make('email'),
+    //             TextEntry::make('bio'),
+    //             TextEntry::make('github_handle'),
+    //             TextEntry::make('twitter_handle'),
+    //         ])
+    //         ->columns(1)
+    //         ->inlineLabel();
+    // }
 
     public static function getRelations(): array
     {
@@ -113,4 +141,9 @@ class AuthorResource extends Resource
             'index' => Pages\ManageAuthors::route('/'),
         ];
     }
+
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::$model::count();
+    // }
 }

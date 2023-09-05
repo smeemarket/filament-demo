@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources\Shop;
 
-use App\Filament\Resources\Shop\BrandResource\Pages;
-use App\Filament\Resources\Shop\BrandResource\RelationManagers;
-use App\Models\Shop\Brand;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Shop\Brand;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
+use App\Filament\Resources\Shop\BrandResource\Pages;
+use App\Filament\Resources\Shop\BrandResource\RelationManagers;
 
 class BrandResource extends Resource
 {
@@ -36,6 +39,7 @@ class BrandResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
+                                    ->autofocus()
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
@@ -101,14 +105,22 @@ class BrandResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function () {
-                        Notification::make()
-                            ->title('Now, now, don\'t be cheeky, leave some records for others to play with!')
-                            ->warning()
-                            ->send();
-                    }),
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully!')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ])
             ->defaultSort('sort')
             ->reorderable('sort');
@@ -130,4 +142,9 @@ class BrandResource extends Resource
             'edit' => Pages\EditBrand::route('/{record}/edit'),
         ];
     }
+
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::$model::count();
+    // }
 }

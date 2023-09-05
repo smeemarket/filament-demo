@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Login;
 use App\Http\Middleware\Authenticate;
+use App\Models\Team;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
@@ -25,10 +26,11 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('dashboard')
+            ->path('admin')
             ->login(Login::class) // Login::class ထည့်လျှင် checked Remember me
             ->registration()
             ->passwordReset()
+            ->emailVerification()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -42,7 +44,6 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Blog',
                 'Shop',
-                'ERP',
             ])
             ->databaseNotifications()
             ->middleware([

@@ -2,22 +2,33 @@
 
 namespace App\Filament\Resources\Blog;
 
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Blog\Post;
+use Filament\Tables\Table;
+use App\Models\Blog\Author;
+use Illuminate\Support\Str;
+use App\Models\Blog\Category;
+use Illuminate\Support\Carbon;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Filament\Infolists\Components;
+use Filament\Support\Enums\ActionSize;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
+use Filament\Forms\Components\SpatieTagsInput;
 use App\Filament\Resources\Blog\PostResource\Pages;
 use App\Filament\Resources\Blog\PostResource\RelationManagers;
-use App\Models\Blog\Post;
-use Filament\Forms;
-use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Form;
-use Filament\Infolists\Components;
-use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
+use App\Filament\Resources\Blog\PostResource\Widgets\PostStats;
 
 class PostResource extends Resource
 {
@@ -42,6 +53,7 @@ class PostResource extends Resource
                         Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\TextInput::make('title')
+                                    ->autofocus()
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
@@ -58,16 +70,75 @@ class PostResource extends Resource
 
                                 Forms\Components\Select::make('blog_author_id')
                                     ->relationship('author', 'name')
+                                    ->preload()
                                     ->searchable()
+                                    ->createOptionForm([
+                                        Forms\Components\Grid::make()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('name')
+                                                    ->required(),
+
+                                                Forms\Components\TextInput::make('email')
+                                                    ->label('Email address')
+                                                    ->required()
+                                                    ->email()
+                                                    ->unique(Author::class, 'email', ignoreRecord: true),
+                                            ]),
+
+                                        Forms\Components\MarkdownEditor::make('bio'),
+
+                                        Forms\Components\Grid::make()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('github_handle')
+                                                    ->label('GitHub'),
+
+                                                Forms\Components\TextInput::make('twitter_handle')
+                                                    ->label('Twitter'),
+                                            ]),
+                                    ])
+                                    ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                                        return $action
+                                            ->modalHeading('Create author')
+                                            ->modalButton('Create author');
+                                    })
                                     ->required(),
 
                                 Forms\Components\Select::make('blog_category_id')
                                     ->relationship('category', 'name')
+                                    ->preload()
                                     ->searchable()
+                                    ->createOptionForm([
+                                        Forms\Components\Grid::make()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('name')
+                                                    ->required()
+                                                    ->maxValue(50)
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $set('slug', Str::slug($state))),
+
+                                                Forms\Components\TextInput::make('slug')
+                                                    ->disabled()
+                                                    ->dehydrated()
+                                                    ->required()
+                                                    ->unique(Category::class, 'slug', ignoreRecord: true),
+                                            ]),
+
+                                        Forms\Components\MarkdownEditor::make('description'),
+
+                                        Forms\Components\Toggle::make('is_visible')
+                                            ->label('Visible to customers.')
+                                            ->default(true),
+                                    ])
+                                    ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                                        return $action
+                                            ->modalHeading('Create category')
+                                            ->modalButton('Create category');
+                                    })
                                     ->required(),
 
                                 Forms\Components\DatePicker::make('published_at')
-                                    ->label('Published Date'),
+                                    ->label('Published Date')
+                                    ->date(),
 
                                 SpatieTagsInput::make('tags'),
                             ])
@@ -176,20 +247,35 @@ class PostResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-
-                Tables\Actions\EditAction::make(),
-
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make()
+                        ->color('primary'),
+                    DeleteAction::make(),
+                ])
+                    // ->icon('heroicon-m-ellipsis-horizontal')
+                    // ->button()
+                    // ->color('info')
+                    // ->size(ActionSize::Small)
+                    // ->label('Actions')
+                    ->tooltip('Actions')
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function () {
-                        Notification::make()
-                            ->title('Now, now, don\'t be cheeky, leave some records for others to play with!')
-                            ->warning()
-                            ->send();
-                    }),
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully!')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ]);
     }
 
@@ -241,6 +327,13 @@ class PostResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            PostStats::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
@@ -275,5 +368,10 @@ class PostResource extends Resource
         }
 
         return $details;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::$model::count();
     }
 }

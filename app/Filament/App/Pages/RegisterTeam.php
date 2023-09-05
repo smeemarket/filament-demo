@@ -10,14 +10,14 @@ class RegisterTeam extends RegisterTenant
 {
     public static function getLabel(): string
     {
-        return 'New team';
+        return 'New Team';
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')->autofocus()->required(),
             ]);
     }
 }

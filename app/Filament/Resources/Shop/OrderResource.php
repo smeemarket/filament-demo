@@ -2,23 +2,26 @@
 
 namespace App\Filament\Resources\Shop;
 
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Shop\Order;
+use Filament\Tables\Table;
+use Squire\Models\Currency;
+use App\Models\Shop\Product;
+use Illuminate\Support\Carbon;
+use Filament\Resources\Resource;
+use App\Forms\Components\AddressForm;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
 use App\Filament\Resources\Shop\OrderResource\Widgets\OrderStats;
-use App\Forms\Components\AddressForm;
-use App\Models\Shop\Order;
-use App\Models\Shop\Product;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Carbon;
-use Squire\Models\Currency;
 
 class OrderResource extends Resource
 {
@@ -32,7 +35,7 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {
@@ -45,6 +48,7 @@ class OrderResource extends Resource
                             ->columns(2),
 
                         Forms\Components\Section::make('Order items')
+                            ->collapsible()
                             ->schema(static::getFormSchema('items')),
                     ])
                     ->columnSpan(['lg' => fn (?Order $record) => $record === null ? 3 : 2]),
@@ -144,14 +148,22 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function () {
-                        Notification::make()
-                            ->title('Now, now, don\'t be cheeky, leave some records for others to play with!')
-                            ->warning()
-                            ->send();
-                    }),
+            ->bulkActions([
+                BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+                            Notification::make()
+                                ->title('Deleted Successfully!')
+                                ->success()
+                                ->send();
+                        }),
+                ]),
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ])
             ->groups([
                 Tables\Grouping\Group::make('created_at')
@@ -269,6 +281,7 @@ class OrderResource extends Resource
 
             Forms\Components\Select::make('shop_customer_id')
                 ->relationship('customer', 'name')
+                ->preload()
                 ->searchable()
                 ->required()
                 ->createOptionForm([
