@@ -29,7 +29,6 @@ use Filament\Forms\Components\SpatieTagsInput;
 use App\Filament\Resources\Blog\PostResource\Pages;
 use App\Filament\Resources\Blog\PostResource\RelationManagers;
 use App\Filament\Resources\Blog\PostResource\Widgets\PostStats;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class PostResource extends Resource
 {
@@ -273,7 +272,10 @@ class PostResource extends Resource
                                 ->send();
                         }),
                 ]),
-                FilamentExportBulkAction::make('export')
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ]);
     }
 
