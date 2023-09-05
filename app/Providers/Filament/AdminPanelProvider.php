@@ -8,7 +8,6 @@ use App\Models\Team;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use App\Filament\Pages\Auth\Login;
-use Filament\Support\Colors\Color;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -19,7 +18,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use BezhanSalleh\FilamentLanguageSwitch\FilamentLanguageSwitchPlugin;
 
 class AdminPanelProvider extends PanelProvider
@@ -65,15 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
-                FilamentLanguageSwitchPlugin::make(),
-                EnvironmentIndicatorPlugin::make()
-                    // ->showBadge(true)
-                    // ->showBorder(true)
-                    ->color(fn () => match (app()->environment()) {
-                        'production' => null,
-                        'staging' => Color::Orange,
-                        default => Color::Amber,
-                    })
+                FilamentLanguageSwitchPlugin::make()
             ]);
     }
 }

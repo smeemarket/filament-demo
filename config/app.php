@@ -1,7 +1,5 @@
 <?php
 
-use Modules\ERP\Providers\ERPServiceProvider;
-
 return [
 
     /*
@@ -171,7 +169,6 @@ return [
         /*
          * Application Service Providers...
          */
-        ERPServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
