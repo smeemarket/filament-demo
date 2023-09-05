@@ -20,8 +20,6 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "psr/simple-cache": "^2.0",
-        "pxlrbt/filament-excel": "^2.1",
         "squirephp/countries-en": "^3.3",
         "squirephp/currencies-en": "^3.3"
     },

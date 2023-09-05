@@ -15,7 +15,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Blog\AuthorResource\Pages;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class AuthorResource extends Resource
 {
@@ -108,7 +107,10 @@ class AuthorResource extends Resource
                                 ->send();
                         }),
                 ]),
-                ExportBulkAction::make()
+                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
+                ->title('to update!')
+                ->warning()
+                ->send()),
             ]);
     }
 
