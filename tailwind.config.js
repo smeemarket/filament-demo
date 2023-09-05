@@ -1,12 +1,8 @@
-const colors = require("tailwindcss/colors");
+const colors = require('tailwindcss/colors')
 
 module.exports = {
-    content: [
-        "./resources/**/*.blade.php",
-        "./vendor/filament/**/*.blade.php",
-        "./vendor/bezhansalleh/filament-exceptions/resources/views/**/*.blade.php",
-    ],
-    darkMode: "class",
+    content: ['./resources/**/*.blade.php', './vendor/filament/**/*.blade.php'],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
@@ -19,7 +15,7 @@ module.exports = {
         },
     },
     plugins: [
-        require("@tailwindcss/forms"),
-        require("@tailwindcss/typography"),
+        require('@tailwindcss/forms'),
+        require('@tailwindcss/typography'),
     ],
-};
+}
