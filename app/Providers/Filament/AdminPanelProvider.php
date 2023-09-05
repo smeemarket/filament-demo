@@ -63,11 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
-                FilamentLanguageSwitchPlugin::make(),
-                \Hasnayeen\Themes\ThemesPlugin::make()
-            ])
-            ->middleware([
-                \Hasnayeen\Themes\Http\Middleware\SetTheme::class
+                FilamentLanguageSwitchPlugin::make()
             ]);
     }
 }
