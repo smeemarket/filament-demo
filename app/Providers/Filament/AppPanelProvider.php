@@ -24,7 +24,7 @@ class AppPanelProvider extends PanelProvider
     {
         return $panel
             ->id('app')
-            ->path('')
+            ->path('app')
             ->login(Login::class)
             ->registration()
             ->passwordReset()
