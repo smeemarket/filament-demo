@@ -6,6 +6,7 @@ use Filament\Panel;
 use App\Models\Team;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Collection;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\HasTenants;
@@ -55,13 +56,5 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
         return $this->belongsToMany(Team::class);
     }
 
-    // public function canAccessTenant(Model $tenant): bool
-    // {
-    //     return $this->teams->contains($tenant);
-    // }
-
-    // public function getTenants(Panel $panel): array | Collection
-    // {
-    //     return $this->teams;
-    // }
+    use HasRoles;
 }
