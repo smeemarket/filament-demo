@@ -17,6 +17,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\CustomerResource\Pages;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Filament\Resources\Shop\CustomerResource\RelationManagers;
 use App\Filament\Resources\Shop\ProductResource\Widgets\CustomerStats;
 
@@ -112,10 +113,7 @@ class CustomerResource extends Resource
                                 ->send();
                         }),
                 ]),
-                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
-                ->title('to update!')
-                ->warning()
-                ->send()),
+                FilamentExportBulkAction::make('export')
             ]);
     }
 
@@ -145,9 +143,4 @@ class CustomerResource extends Resource
     {
         return ['name', 'email'];
     }
-
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::$model::count();
-    // }
 }

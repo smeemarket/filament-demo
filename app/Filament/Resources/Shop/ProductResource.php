@@ -17,6 +17,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Shop\ProductResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers;
 use App\Filament\Resources\Shop\ProductResource\Widgets\ProductStats;
 use App\Filament\Resources\Shop\BrandResource\RelationManagers\ProductsRelationManager;
@@ -255,10 +256,7 @@ class ProductResource extends Resource
                                 ->send();
                         }),
                 ]),
-                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
-                ->title('to update!')
-                ->warning()
-                ->send()),
+                FilamentExportBulkAction::make('export')
             ]);
     }
 

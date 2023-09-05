@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Filament\Resources\Shop\OrderResource\Widgets\OrderStats;
 
 class OrderResource extends Resource
@@ -160,10 +161,7 @@ class OrderResource extends Resource
                                 ->send();
                         }),
                 ]),
-                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
-                ->title('to update!')
-                ->warning()
-                ->send()),
+                FilamentExportBulkAction::make('export')
             ])
             ->groups([
                 Tables\Grouping\Group::make('created_at')

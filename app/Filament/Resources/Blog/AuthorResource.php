@@ -15,6 +15,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Blog\AuthorResource\Pages;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class AuthorResource extends Resource
 {
@@ -107,10 +108,7 @@ class AuthorResource extends Resource
                                 ->send();
                         }),
                 ]),
-                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
-                ->title('to update!')
-                ->warning()
-                ->send()),
+                FilamentExportBulkAction::make('export')
             ]);
     }
 
@@ -141,9 +139,4 @@ class AuthorResource extends Resource
             'index' => Pages\ManageAuthors::route('/'),
         ];
     }
-
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::$model::count();
-    // }
 }

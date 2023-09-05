@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Shop\CategoryResource\Pages;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use App\Filament\Resources\Shop\CategoryResource\RelationManagers;
 
 class CategoryResource extends Resource
@@ -123,10 +124,7 @@ class CategoryResource extends Resource
                                 ->send();
                         }),
                 ]),
-                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
-                ->title('to update!')
-                ->warning()
-                ->send()),
+                FilamentExportBulkAction::make('export')
             ]);
     }
 
@@ -145,9 +143,4 @@ class CategoryResource extends Resource
             'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
-
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::$model::count();
-    // }
 }

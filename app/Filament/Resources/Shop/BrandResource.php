@@ -15,6 +15,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\Shop\BrandResource\Pages;
 use App\Filament\Resources\Shop\BrandResource\RelationManagers;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class BrandResource extends Resource
 {
@@ -117,10 +118,7 @@ class BrandResource extends Resource
                                 ->send();
                         }),
                 ]),
-                BulkAction::make('export')->button()->action(fn (Collection $records) => Notification::make()
-                ->title('to update!')
-                ->warning()
-                ->send()),
+                FilamentExportBulkAction::make('export')
             ])
             ->defaultSort('sort')
             ->reorderable('sort');
@@ -142,9 +140,4 @@ class BrandResource extends Resource
             'edit' => Pages\EditBrand::route('/{record}/edit'),
         ];
     }
-
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::$model::count();
-    // }
 }
