@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5988819d30b8804137467c042e6ca933",
+    "content-hash": "b35ccc0a9ec2024547e7aacd354113f1",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -6152,16 +6152,16 @@
         },
         {
             "name": "spatie/laravel-medialibrary",
-            "version": "10.12.2",
+            "version": "10.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-medialibrary.git",
-                "reference": "38af83a445a9ccffede87b7251102580b6f3883f"
+                "reference": "293a066890e10c951ff29bc76bfa026a60034edc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/38af83a445a9ccffede87b7251102580b6f3883f",
-                "reference": "38af83a445a9ccffede87b7251102580b6f3883f",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/293a066890e10c951ff29bc76bfa026a60034edc",
+                "reference": "293a066890e10c951ff29bc76bfa026a60034edc",
                 "shasum": ""
             },
             "require": {
@@ -6244,7 +6244,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-medialibrary/issues",
-                "source": "https://github.com/spatie/laravel-medialibrary/tree/10.12.2"
+                "source": "https://github.com/spatie/laravel-medialibrary/tree/10.11.3"
             },
             "funding": [
                 {
@@ -6256,7 +6256,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-05T07:56:04+00:00"
+            "time": "2023-08-07T07:30:22+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -12552,7 +12552,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "alperenersoy/filament-export": 10,
         "bezhansalleh/filament-shield": 10
     },
     "prefer-stable": true,
