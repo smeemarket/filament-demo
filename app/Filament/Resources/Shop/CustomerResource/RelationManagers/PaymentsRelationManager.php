@@ -2,16 +2,15 @@
 
 namespace App\Filament\Resources\Shop\CustomerResource\RelationManagers;
 
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Akaunting\Money\Currency;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\Shop\OrderResource;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class PaymentsRelationManager extends RelationManager
 {
@@ -101,9 +100,8 @@ class PaymentsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->groupedBulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-                FilamentExportBulkAction::make('export')
             ]);
     }
 }

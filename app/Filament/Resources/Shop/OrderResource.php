@@ -149,8 +149,10 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
+            ->groupedBulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->bulkActions([
                 FilamentExportBulkAction::make('export')
             ])
             ->groups([
@@ -222,7 +224,6 @@ class OrderResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('shop_product_id')
                             ->label('Product')
-                            ->preload()
                             ->options(Product::query()->pluck('name', 'id'))
                             ->required()
                             ->reactive()

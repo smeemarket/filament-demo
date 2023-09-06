@@ -7,11 +7,8 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
-use Filament\Notifications\Actions\Action;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
-use App\Filament\Resources\Blog\PostResource;
 use Filament\Resources\RelationManagers\RelationManager;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
@@ -84,26 +81,17 @@ class CommentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->after(function ($record) {
-                        Notification::make()
-                            ->title('New comment')
-                            ->icon('heroicon-o-chat-bubble-bottom-center-text')
-                            ->body("**{$record->customer->name} commented on post ({$record->commentable->name}).**")
-                            ->actions([
-                                Action::make('View')
-                                    ->url(PostResource::getUrl('edit', ['record' => $record->commentable_id])),
-                            ])
-                            ->sendToDatabase(auth()->user());
-                    }),
+                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->groupedBulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->bulkActions([
                 FilamentExportBulkAction::make('export')
             ]);
     }

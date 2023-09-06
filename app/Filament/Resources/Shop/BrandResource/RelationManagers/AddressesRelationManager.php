@@ -3,12 +3,11 @@
 namespace App\Filament\Resources\Shop\BrandResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
 use Filament\Tables\Table;
 use Squire\Models\Country;
-use Filament\Resources\RelationManagers\RelationManager;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class AddressesRelationManager extends RelationManager
 {
@@ -63,9 +62,6 @@ class AddressesRelationManager extends RelationManager
             ->groupedBulkActions([
                 Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
-            ])
-            ->bulkActions([
-                FilamentExportBulkAction::make('export')
             ]);
     }
 }

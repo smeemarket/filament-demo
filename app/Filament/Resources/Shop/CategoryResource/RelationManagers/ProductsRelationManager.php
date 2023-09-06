@@ -28,5 +28,8 @@ class ProductsRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\DeleteAction::make(),
             ]);
+            // ->groupedBulkActions([
+            //     Tables\Actions\DeleteBulkAction::make(),
+            // ]);
     }
 }

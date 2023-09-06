@@ -106,8 +106,10 @@ class BrandResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
+            ->groupedBulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->bulkActions([
                 FilamentExportBulkAction::make('export')
             ])
             ->defaultSort('sort')
