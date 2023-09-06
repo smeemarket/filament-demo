@@ -8,8 +8,10 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use App\Filament\Resources\Shop\ProductResource;
 use Filament\Resources\RelationManagers\RelationManager;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
@@ -87,6 +89,10 @@ class CommentsRelationManager extends RelationManager
                             ->title('New comment')
                             ->icon('heroicon-o-chat-bubble-bottom-center-text')
                             ->body("**{$record->customer->name} commented on product ({$record->commentable->name}).**")
+                            ->actions([
+                                Action::make('View')
+                                    ->url(ProductResource::getUrl('edit', ['record' => $record->commentable_id])),
+                            ])
                             ->sendToDatabase(auth()->user());
                     }),
             ])
@@ -95,10 +101,8 @@ class CommentsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export')
             ]);
     }

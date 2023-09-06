@@ -2,13 +2,14 @@
 
 namespace App\Filament\Resources\Shop\OrderResource\RelationManagers;
 
-use Akaunting\Money\Currency;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Akaunting\Money\Currency;
+use Filament\Resources\RelationManagers\RelationManager;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class PaymentsRelationManager extends RelationManager
 {
@@ -44,10 +45,11 @@ class PaymentsRelationManager extends RelationManager
 
                 Forms\Components\Select::make('method')
                     ->options([
-                        'credit_card' => 'Credit card',
                         'bank_transfer' => 'Bank transfer',
+                        'credit_card' => 'Credit card',
                         'paypal' => 'PayPal',
                     ])
+                    ->default('bank_transfer')
                     ->required()
                     ->native(false),
             ]);
@@ -80,8 +82,9 @@ class PaymentsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->groupedBulkActions([
+            ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                FilamentExportBulkAction::make('export')
             ]);
     }
 }

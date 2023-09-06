@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('dashboard')
+            ->path('admin')
             ->login(Login::class) // Login::class ထည့်လျှင် checked Remember me
             ->registration()
             ->passwordReset()
@@ -42,10 +42,11 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
-            // ->navigationGroups([
-            //     'Blog',
-            //     'Shop',
-            // ])
+            ->navigationGroups([
+                'Shield',
+                'Blog',
+                'Shop',
+            ])
             ->databaseNotifications()
             ->middleware([
                 EncryptCookies::class,

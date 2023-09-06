@@ -166,12 +166,11 @@ class PostResource extends Resource
                             ->label('Last modified at')
                             ->content(fn (Post $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
-                    ->columnSpan(['lg' => 1])
+                    ->columnSpan(['xl' => 1])
                     ->hidden(fn (?Post $record) => $record === null),
             ])
             ->columns([
-                'sm' => 3,
-                'lg' => null,
+                'xl' => 3,
             ]);
     }
 
@@ -261,11 +260,9 @@ class PostResource extends Resource
                     // ->label('Actions')
                     ->tooltip('Actions')
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
-                FilamentExportBulkAction::make('export')
+                Tables\Actions\DeleteBulkAction::make(),
+                // FilamentExportBulkAction::make('export') // error တက် column relation comment ကြောင့်ထင်
             ]);
     }
 
@@ -297,7 +294,7 @@ class PostResource extends Resource
                             Components\ImageEntry::make('image')
                                 ->hiddenLabel()
                                 ->grow(false),
-                        ])->from('lg'),
+                        ])->from('md'),
                     ]),
                 Components\Section::make('Content')
                     ->schema([
@@ -314,13 +311,6 @@ class PostResource extends Resource
     {
         return [
             RelationManagers\CommentsRelationManager::class,
-        ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            PostStats::class,
         ];
     }
 
@@ -358,10 +348,5 @@ class PostResource extends Resource
         }
 
         return $details;
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::$model::count();
     }
 }
