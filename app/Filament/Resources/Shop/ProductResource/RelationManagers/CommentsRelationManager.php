@@ -3,14 +3,15 @@
 namespace App\Filament\Resources\Shop\ProductResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
-use Filament\Tables\Table;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class CommentsRelationManager extends RelationManager
 {
@@ -29,6 +30,7 @@ class CommentsRelationManager extends RelationManager
                 Forms\Components\Select::make('customer_id')
                     ->relationship('customer', 'name')
                     ->searchable()
+                    ->preload()
                     ->required(),
 
                 Forms\Components\Toggle::make('is_visible')
@@ -95,6 +97,9 @@ class CommentsRelationManager extends RelationManager
             ])
             ->groupedBulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->bulkActions([
+                FilamentExportBulkAction::make('export')
             ]);
     }
 }

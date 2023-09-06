@@ -3,13 +3,14 @@
 namespace App\Filament\Resources\Blog\PostResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Tables;
 use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
-use Filament\Tables\Table;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class CommentsRelationManager extends RelationManager
 {
@@ -89,6 +90,9 @@ class CommentsRelationManager extends RelationManager
             ])
             ->groupedBulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->bulkActions([
+                FilamentExportBulkAction::make('export')
             ]);
     }
 }

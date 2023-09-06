@@ -101,18 +101,10 @@ class CustomerResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
+            ->groupedBulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
+            ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->requiresConfirmation()
-                        ->action(function (Collection $records) {
-                            $records->each->delete();
-                            Notification::make()
-                                ->title('Deleted Successfully!')
-                                ->success()
-                                ->send();
-                        }),
-                ]),
                 FilamentExportBulkAction::make('export')
             ]);
     }
