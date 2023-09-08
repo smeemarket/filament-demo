@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Blog\CategoryResource\Pages;
 
-use App\Filament\Resources\Blog\CategoryResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use App\Filament\Resources\Blog\CategoryResource;
 
 class ManageCategories extends ManageRecords
 {

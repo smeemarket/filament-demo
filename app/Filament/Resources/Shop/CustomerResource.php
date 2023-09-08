@@ -58,7 +58,7 @@ class CustomerResource extends Resource
                             ->maxDate('today'),
                     ])
                     ->columns(2)
-                    ->columnSpan(['lg' => fn (?Customer $record) => $record === null ? 3 : 2]),
+                    ->columnSpan(['xl' => fn (?Customer $record) => $record === null ? 3 : 2]),
 
                 Forms\Components\Section::make()
                     ->schema([
@@ -70,7 +70,7 @@ class CustomerResource extends Resource
                             ->label('Last modified at')
                             ->content(fn (Customer $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
-                    ->columnSpan(['lg' => 1])
+                    ->columnSpan(['xl' => 1 , 'lg' => 2 ])
                     ->hidden(fn (?Customer $record) => $record === null),
             ])
             ->columns(3);
@@ -101,10 +101,8 @@ class CustomerResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export')
             ]);
     }

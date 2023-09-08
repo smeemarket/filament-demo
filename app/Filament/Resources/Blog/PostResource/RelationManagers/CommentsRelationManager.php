@@ -88,10 +88,8 @@ class CommentsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export')
             ]);
     }

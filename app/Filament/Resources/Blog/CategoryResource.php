@@ -90,10 +90,8 @@ class CategoryResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export')
             ]);
     }
@@ -128,9 +126,4 @@ class CategoryResource extends Resource
             'index' => Pages\ManageCategories::route('/'),
         ];
     }
-
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::$model::count();
-    // }
 }

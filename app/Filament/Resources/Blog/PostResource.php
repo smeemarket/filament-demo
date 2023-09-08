@@ -166,12 +166,11 @@ class PostResource extends Resource
                             ->label('Last modified at')
                             ->content(fn (Post $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
-                    ->columnSpan(['lg' => 1])
+                    ->columnSpan(['xl' => 1])
                     ->hidden(fn (?Post $record) => $record === null),
             ])
             ->columns([
-                'sm' => 3,
-                'lg' => null,
+                'xl' => 3,
             ]);
     }
 
@@ -261,11 +260,8 @@ class PostResource extends Resource
                     // ->label('Actions')
                     ->tooltip('Actions')
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
-                FilamentExportBulkAction::make('export')
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
@@ -314,13 +310,6 @@ class PostResource extends Resource
     {
         return [
             RelationManagers\CommentsRelationManager::class,
-        ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            PostStats::class,
         ];
     }
 

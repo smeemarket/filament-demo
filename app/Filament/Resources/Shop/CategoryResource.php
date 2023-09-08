@@ -79,10 +79,12 @@ class CategoryResource extends Resource
                             ->label('Last modified at')
                             ->content(fn (Category $record): ?string => $record->updated_at?->diffForHumans()),
                     ])
-                    ->columnSpan(['lg' => 1])
+                    ->columnSpan(['xl' => 1])
                     ->hidden(fn (?Category $record) => $record === null),
             ])
-            ->columns(3);
+            ->columns([
+                'xl' => 3,
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -112,10 +114,8 @@ class CategoryResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export')
             ]);
     }

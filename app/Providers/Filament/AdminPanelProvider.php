@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('dashboard')
+            ->path('admin')
             ->login(Login::class) // Login::class ထည့်လျှင် checked Remember me
             ->registration()
             ->passwordReset()

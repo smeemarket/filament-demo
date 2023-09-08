@@ -52,7 +52,7 @@ class OrderResource extends Resource
                             ->collapsible()
                             ->schema(static::getFormSchema('items')),
                     ])
-                    ->columnSpan(['lg' => fn (?Order $record) => $record === null ? 3 : 2]),
+                    ->columnSpan(['xl' => fn (?Order $record) => $record === null ? 3 : 2, 'lg' => fn (?Order $record) => $record === null ? 3 : 3]),
 
                 Forms\Components\Section::make()
                     ->schema([
@@ -149,10 +149,8 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export')
             ])
             ->groups([

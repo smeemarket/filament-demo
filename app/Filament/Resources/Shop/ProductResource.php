@@ -136,7 +136,7 @@ class ProductResource extends Resource
                             ])
                             ->columns(2),
                     ])
-                    ->columnSpan(['lg' => 2]),
+                    ->columnSpan(['lg' => 3 , 'xl' => 2]),
 
                 Forms\Components\Group::make()
                     ->schema([
@@ -168,7 +168,7 @@ class ProductResource extends Resource
                                     ->required(),
                             ]),
                     ])
-                    ->columnSpan(['lg' => 1]),
+                    ->columnSpan(['lg' => 3 , 'xl' => 1]),
             ])
             ->columns(3);
     }
@@ -244,10 +244,8 @@ class ProductResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->groupedBulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ])
             ->bulkActions([
+                Tables\Actions\DeleteBulkAction::make(),
                 FilamentExportBulkAction::make('export')
             ]);
     }
